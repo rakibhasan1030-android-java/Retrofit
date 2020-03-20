@@ -16,8 +16,8 @@ public class FlowerDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flower_details);
         FlowerResponse response = (FlowerResponse) getIntent().getSerializableExtra("flowerClicked");
-        String flowerName = response.getPhoto();
+        String flowerNameWithEndURL = "photos/" + response.getPhoto();
         flowerImage = findViewById(R.id.flowerImage);
-        Picasso.get().load(Constant.BASE_URL+flowerName).into(flowerImage);
+        Picasso.get().load(Constant.BASE_URL+flowerNameWithEndURL).into(flowerImage);
     }
 }
