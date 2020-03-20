@@ -3,8 +3,10 @@ package com.rakib.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 // as we're getting info from json file as response, so by convention this type of class called "ExampleResponse"
-public class FlowerResponse {
+public class FlowerResponse implements Serializable {
 
     @SerializedName("category")
     @Expose

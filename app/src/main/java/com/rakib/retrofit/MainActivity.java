@@ -1,10 +1,16 @@
 package com.rakib.retrofit;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -15,14 +21,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    ListView flowerListView;
+    FlowerAdapter flowerAdapter;
+    List<FlowerResponse> responseList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        flowerListView = findViewById(R.id.flowerLV);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://services.hanselandpetal.com/")
+                .baseUrl(Constant.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -41,10 +52,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<FlowerResponse>> call, Response<List<FlowerResponse>> response) {
                 if (response.code() == 200){
-                    List<FlowerResponse> responses = response.body();
-                    Toast.makeText(getApplicationContext(), "Size : "+responses.size(), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), "Size : ", Toast.LENGTH_SHORT).show();
-                    ((TextView)(findViewById(R.id.size))).setText(String.valueOf(responses.size()));
+                    responseList = response.body();
+                    flowerAdapter =  new FlowerAdapter(MainActivity.this, responseList);
+                    flowerListView.setAdapter(flowerAdapter);
                 }
             }
 
@@ -54,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        flowerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FlowerResponse flowerResponse = responseList.get(position);
+                startActivity(new Intent(MainActivity.this, FlowerDetailsActivity.class).putExtra("flowerClicked", flowerResponse));
+            }
+        });
 
     }
 }
